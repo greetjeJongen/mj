@@ -2,7 +2,6 @@ import os, git, subprocess
 from flask import Flask, request, json
 from flask_mysqldb import MySQL
 
-app = Flask(__name__)
 
 # MySQL config
 app = Flask(__name__)
@@ -35,7 +34,7 @@ def hook():
         git.Git(path).clone(url)
 
     # tests rerunnen
-    rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
+    #rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
     return "success"
 
 if __name__ == "__main__":
