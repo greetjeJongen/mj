@@ -27,12 +27,14 @@ def has_current_question(user):
 
 @app.route("/question/<user>/next")
 def next_question(user):
+    if has_current_question(user):
+        return user+": already has a question!)"
+    
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s and datetimeOfAnswer is null;", [str(user)])
+    cursor.execute("SELECT category FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
     res = cursor.fetchall()
     cursor.close()
-
-
+    lastCat = res[0][0]
 
     return "success"
 
