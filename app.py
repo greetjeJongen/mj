@@ -24,11 +24,11 @@ def current_question(user):
     cursor.close()
 
     if len(res) == 0:
-        return jsonify({"result": "gebruiker heeft nog geen vraag gekregen"})
+        return False
 
     current = res[0][0]
 
-    return jsonify({"result": res[0][0]})
+    return True
 
 @app.route("/question/<user>/next")
 def next_question(user):
