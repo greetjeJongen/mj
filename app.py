@@ -16,19 +16,14 @@ mysql = MySQL(app)
 def index():
     return "Welcome! zieke flask server hier gemaakt door the Didactical Aids Team"
 
-@app.route("/question/<user>/current")
-def current_question(user):
+
+def has_current_question(user):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s and datetimeOfAnswer is null;", [str(user)])
     res = cursor.fetchall()
     cursor.close()
 
-    if len(res) == 0:
-        return False
-
-    current = res[0][0]
-
-    return True
+    return len(res) != 0
 
 @app.route("/question/<user>/next")
 def next_question(user):
