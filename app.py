@@ -1,7 +1,8 @@
 import os, git, subprocess
 from flask import Flask, request, json, jsonify
 from flask_mysqldb import MySQL
-
+import categoriesLister as cl
+import getRandomQuestion as rq
 
 # MySQL config
 app = Flask(__name__)
@@ -14,7 +15,7 @@ mysql = MySQL(app)
 
 @app.route("/")
 def index():
-    return "Welcome! zieke flask server hier gemaakt door the Didactical Aids Team"
+    return "Welcome! Dit is de endpoint voor Mava Jini Testr"
 
 
 def has_current_question(user):
@@ -28,15 +29,38 @@ def has_current_question(user):
 @app.route("/question/<user>/next")
 def next_question(user):
     if has_current_question(user):
-        return user+": already has a question!)"
+        return user+": already has a question!"
     
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT category FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
     res = cursor.fetchall()
     cursor.close()
-    lastCat = res[0][0]
+    if len(res) == 0:
+        print(user+ " hasn't made any exercises yet. Setting up for first question!")
+        category = cl.firstCat()
+        ques = rq.getRandomQuestion(str(category))
+        pathToQuestion = "../mj_repos/"+user+"/"+category+"/"+ques
+        print("Assigning "+pathToQuestion + " ...")
+        
+        # IMPLEMENT FILE COPY AND GIT PUSH
 
-    return "success"
+        return "success"
+    else:
+        lastCat = res[0][0]
+        print(user+" has made an exercise for all categories up to " + lastCat)
+        cats = cl.listCats()
+        index = cats.index(lastCat)
+        if index >= len(cats):
+            print("All exercises are made!?")
+        else:
+            nextCat = cats[index+1]
+            ques = rq.getRandomQuestion(str(nextCat))
+            pathToQuestion = "../mj_repos/"+user+"/"+nextCat+"/"+ques
+            print("Assigning " + pathToQuestion+ " ...")
+
+            # IMPLEMENT COPYING ON FILES AND GIT PUSH
+
+        return "success"
 
 @app.route("/hook", methods=['POST'])
 def hook():
