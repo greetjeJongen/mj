@@ -36,7 +36,7 @@ def next_question(user):
     cursor.close()
     if len(res) == 0:
         print(user+ " hasn't made any exercises yet. Setting up for first question!")
-        category = cl.firstCat()
+        category = cl.first_cat()
         ques = rq.get_random_question(str(category))
         path_to_question = "../mj_repos/"+user+"/"+category+"/"+ques
         print("Assigning " + path_to_question + " ...")
