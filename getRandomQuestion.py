@@ -1,4 +1,5 @@
 import os, random, sys, git, subprocess
+import shutil
 
 
 def get_random_question(category):
@@ -24,7 +25,13 @@ def copy_question(user, cat, q):
     # copy new question
     if not os.path.exists(user_cat_path):
         os.mkdir(user_cat_path)
-    res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q + "/*", user_cat_path + "/" + q])
+
+    src_path = "../MJQuestions/" + cat + "/" + q
+    for file in os.listdir(src_path):
+        full_path = os.path.join(src_path, file)
+        if os.path.isfile(full_path):
+            shutil.copy(full_path, "user_cat_path + "/" + q")
+    # res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q + "/*", user_cat_path + "/" + q])
     print(res)
 
     # push changes
