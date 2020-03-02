@@ -26,11 +26,9 @@ def copy_question(user, cat, q):
     if not os.path.exists(user_cat_path):
         os.mkdir(user_cat_path)
 
-    src_path = "../MJQuestions/" + cat + "/" + q
-    for file in os.listdir(src_path):
-        full_path = os.path.join(src_path, file)
-        if os.path.isfile(full_path):
-            shutil.copy(full_path, user_cat_path + "/" + q + "/" + file)
+    src_path = "../MJQuestions/" + cat + "/" + q + "/Student.java"
+    dest_path = user_cat_path + "/Student.java"
+    shutil.copy(src_path, dest_path)
     # res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q + "/*", user_cat_path + "/" + q])
     print(res)
 
