@@ -1,6 +1,6 @@
 import os
 
-def listCats():
+def list_cats():
     path="../MJQuestions/"
     res = []
     for x in os.listdir(path):
@@ -9,6 +9,6 @@ def listCats():
     res.sort()
     return res
 
-def firstCat():
-    r = listCats()
+def first_cat():
+    r = list_cats()
     return r[0]

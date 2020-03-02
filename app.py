@@ -37,32 +37,32 @@ def next_question(user):
     if len(res) == 0:
         print(user+ " hasn't made any exercises yet. Setting up for first question!")
         category = cl.firstCat()
-        ques = rq.getRandomQuestion(str(category))
-        pathToQuestion = "../mj_repos/"+user+"/"+category+"/"+ques
-        print("Assigning " + pathToQuestion + " ...")
+        ques = rq.get_random_question(str(category))
+        path_to_question = "../mj_repos/"+user+"/"+category+"/"+ques
+        print("Assigning " + path_to_question + " ...")
 
         # copy and push
-        rq.copyQuestion(user, category, ques)
+        rq.copy_question(user, category, ques)
 
         # insert nieuwe vraag in db
 
 
         return "success"
     else:
-        lastCat = res[0][0]
-        print(user+" has made an exercise for all categories up to " + lastCat)
-        cats = cl.listCats()
-        index = cats.index(lastCat)
+        last_cat = res[0][0]
+        print(user+" has made an exercise for all categories up to " + last_cat)
+        cats = cl.list_cats()
+        index = cats.index(last_cat)
         if index >= len(cats):
             print("All exercises are made!?")
         else:
-            nextCat = cats[index+1]
-            ques = rq.getRandomQuestion(str(nextCat))
-            pathToQuestion = "../mj_repos/"+user+"/"+nextCat+"/"+ques
-            print("Assigning " + pathToQuestion+ " ...")
+            next_cat = cats[index+1]
+            ques = rq.get_random_question(str(next_cat))
+            path_to_question = "../mj_repos/"+user+"/"+next_cat+"/"+ques
+            print("Assigning " + path_to_question +  " ...")
 
             # copy and push
-            rq.copyQuestion(user, nextCat, ques)
+            rq.copy_question(user, next_cat, ques)
 
             # insert neiuwe vraag in db
 
