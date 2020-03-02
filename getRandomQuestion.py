@@ -30,7 +30,7 @@ def copy_question(user, cat, q):
     for file in os.listdir(src_path):
         full_path = os.path.join(src_path, file)
         if os.path.isfile(full_path):
-            shutil.copy(full_path, "user_cat_path + "/" + q")
+            shutil.copy(full_path, user_cat_path + "/" + q)
     # res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q + "/*", user_cat_path + "/" + q])
     print(res)
 
