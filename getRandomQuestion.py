@@ -21,7 +21,7 @@ def copyQuestion(user, cat, q):
     print(res)
 
     # copy new question
-    res = subprocess.call(["cp", "../MjQuestions/" + cat + "/" + q, user_path + "/" + cat + "/" + q])
+    res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q, user_path + "/" + cat + "/" + q])
     print(res)
 
     # push changes
