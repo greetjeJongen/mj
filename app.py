@@ -44,6 +44,8 @@ def next_question(user):
         # copy and push
         rq.copyQuestion(user, category, ques)
 
+        # insert nieuwe vraag in db
+
 
         return "success"
     else:
@@ -61,6 +63,8 @@ def next_question(user):
 
             # copy and push
             rq.copyQuestion(user, nextCat, ques)
+
+            # insert neiuwe vraag in db
 
         return "success"
 

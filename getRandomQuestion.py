@@ -1,4 +1,4 @@
-import os, random, sys, git
+import os, random, sys, git, subprocess
 
 
 def getRandomQuestion(category):
@@ -17,11 +17,11 @@ def copyQuestion(user, cat, q):
     user_path = "../mj_repos/" + user
 
     # remove previous question(s) from this category of verplaatsen naar foute opdrachten mapke
-    res = os.subprocess.call(["rm", "-rf", user_path + "/" + cat])
+    res = subprocess.call(["rm", "-rf", user_path + "/" + cat])
     print(res)
 
     # copy new question
-    res = os.subprocess.call(["cp", "../MjQuestions/" + cat + "/" + q, user_path + "/" + cat + "/" + q])
+    res = subprocess.call(["cp", "../MjQuestions/" + cat + "/" + q, user_path + "/" + cat + "/" + q])
     print(res)
 
     # push changes
