@@ -17,7 +17,6 @@ mysql = MySQL(app)
 def index():
     return "Welcome! Dit is de endpoint voor Mava Jini Testr"
 
-
 def has_current_question(user):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s and datetimeOfAnswer is null;", [str(user)])
@@ -29,7 +28,7 @@ def has_current_question(user):
 @app.route("/question/<user>/next")
 def next_question(user):
     if has_current_question(user):
-        return user+": already has a question!"
+        return user+" already has a question!"
     
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT category FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
@@ -40,9 +39,11 @@ def next_question(user):
         category = cl.firstCat()
         ques = rq.getRandomQuestion(str(category))
         pathToQuestion = "../mj_repos/"+user+"/"+category+"/"+ques
-        print("Assigning "+pathToQuestion + " ...")
-        
-        # IMPLEMENT FILE COPY AND GIT PUSH
+        print("Assigning " + pathToQuestion + " ...")
+
+        # copy and push
+        rq.copyQuestion(user, category, ques)
+
 
         return "success"
     else:
@@ -58,7 +59,8 @@ def next_question(user):
             pathToQuestion = "../mj_repos/"+user+"/"+nextCat+"/"+ques
             print("Assigning " + pathToQuestion+ " ...")
 
-            # IMPLEMENT COPYING ON FILES AND GIT PUSH
+            # copy and push
+            rq.copyQuestion(user, nextCat, ques)
 
         return "success"
 
