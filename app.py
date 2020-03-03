@@ -125,7 +125,7 @@ def status_all():
     cursor.execute("select repoName, passed from answer")
     res = cursor.fetchall()
     cursor.close()
-    return status_parse()
+    return status_parse(res)
 
 
 @app.route("/status/<name>")
