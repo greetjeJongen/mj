@@ -16,7 +16,7 @@ mysql = MySQL(app)
 # app config
 questions_path = "../MJQuestions/"
 repos_path = "../mj_repos/"
-
+port = 83
 
 @app.route("/")
 def index():
@@ -97,7 +97,7 @@ def hook():
     url = json.loads(data)["repository"]["url"]
     name = json.loads(data)["repository"]["name"]
 
-    if os.path.exists(path + name):
+    if os.path.exists(repos_path + name):
         git.Git(repos_path + name).pull(url)
     else:
         git.Git(repos_path).clone(url)
@@ -106,13 +106,26 @@ def hook():
     #rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
     return "success"
 
+# given a list of tuples res (query result), converts this list to a dict with readable keys
+# so that there is no need to rely on indexes. (it also looks better)
+def status_parse(res):
+    result = {}
+    for row in res:
+        d = {}
+        d["repoName"] = row[0]
+        d["passed"] = row[1]
+        result.append(d)
+
+    return result
+
+
 @app.route("/status/everyone")
 def status_all():
     cursor = mysql.connection.cursor()
     cursor.execute("select repoName, passed from answer")
     res = cursor.fetchall()
     cursor.close()
-    return jsonify(res)
+    return status_parse()
 
 
 @app.route("/status/<name>")
@@ -120,4 +133,4 @@ def status(name):
     return "success"
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, port=83)
+    app.run(host='0.0.0.0', debug=True, port=port)
