@@ -134,6 +134,8 @@ def status(name):
     cursor.execute("select repoName, passed from answer where repoName=%s", [str(name)])
     res = cursor.fetchall()
     cursor.close()
+    if len(res) == 0:
+        return "no users found with repository " + name
     return jsonify(status_parse(res))
 
 if __name__ == "__main__":
