@@ -66,7 +66,7 @@ def next_question(user):
             next_cat = cats[index+1]
             ques = rq.get_random_question(str(next_cat))
             path_to_question = repos_path + user + "/" + next_cat + "/" + ques
-            print("Assigning " + path_to_question +  " ...")
+            print("Assigning " + path_to_question + " ...")
 
             # copy and push
             rq.copy_question(user, next_cat, ques)
@@ -106,9 +106,17 @@ def hook():
     #rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
     return "success"
 
+@app.route("/status/everyone")
+def status_all():
+
+
 @app.route("/status/<name>")
 def status(name):
-    return "success"
+    cursor = mysql.connection.cursor()
+    cursor.execute("select repoName, passed from answer")
+    res = cursor.fetchall()
+    cursor.close()
+    return jsonify(res)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=83)
