@@ -55,7 +55,7 @@ def next_question(user):
         print(user+" has made an exercise for all categories up to " + last_cat)
         cats = cl.list_cats()
         index = cats.index(last_cat)
-        if index >= len(cats):
+        if index >= len(cats)-1:
             print("All exercises are made!?")
             return "all exercises made"
         else:
