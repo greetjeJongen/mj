@@ -15,7 +15,7 @@ def get_random_question(category):
     return li[rand]
 
 def copy_question(user, cat, q):
-    user_path = "../mj_repos/" + user
+    user_path = repos_path + user
     user_cat_path = user_path + "/" + cat
 
     # remove previous question(s) from this category of verplaatsen naar foute opdrachten mapke
@@ -26,7 +26,7 @@ def copy_question(user, cat, q):
     if not os.path.exists(user_cat_path):
         os.mkdir(user_cat_path)
 
-    src_path = "../MJQuestions/" + cat + "/" + q + "/Student.java"
+    src_path = questions_path + cat + "/" + q + "/Student.java"
     dest_path = user_cat_path + "/Student.java"
     shutil.copy(src_path, dest_path)
     # res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q + "/*", user_cat_path + "/" + q])

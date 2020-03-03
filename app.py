@@ -13,6 +13,10 @@ app.config['MYSQL_DB'] = 'mj_testr'
 app.config['MYSQL_HOST'] = 'localhost'
 mysql = MySQL(app)
 
+# app config
+questions_path = "../MJQuestions/"
+repos_path = "../mj_repos/"
+
 
 @app.route("/")
 def index():
@@ -39,7 +43,7 @@ def next_question(user):
         print(user+ " hasn't made any exercises yet. Setting up for first question!")
         category = cl.first_cat()
         ques = rq.get_random_question(str(category))
-        path_to_question = "../mj_repos/"+user+"/"+category+"/"+ques
+        path_to_question = repos_path + user + "/" + category + "/" + ques
         print("Assigning " + path_to_question + " ...")
 
         # copy and push
@@ -61,7 +65,7 @@ def next_question(user):
         else:
             next_cat = cats[index+1]
             ques = rq.get_random_question(str(next_cat))
-            path_to_question = "../mj_repos/"+user+"/"+next_cat+"/"+ques
+            path_to_question = repos_path + user + "/" + next_cat + "/" + ques
             print("Assigning " + path_to_question +  " ...")
 
             # copy and push
@@ -92,16 +96,19 @@ def hook():
     data = request.data
     url = json.loads(data)["repository"]["url"]
     name = json.loads(data)["repository"]["name"]
-    path = "../mj_repos/"
 
     if os.path.exists(path + name):
-        git.Git(path + name).pull(url)
+        git.Git(repos_path + name).pull(url)
     else:
-        git.Git(path).clone(url)
+        git.Git(repos_path).clone(url)
 
     # tests runnen
     #rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
     return "success"
+
+@app.route("/status/<name>")
+def status(name):
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=83)
