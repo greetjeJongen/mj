@@ -109,7 +109,7 @@ def hook():
 # given a list of tuples res (query result), converts this list to a dict with readable keys
 # so that there is no need to rely on indexes. (it also looks better)
 def status_parse(res):
-    result = {}
+    result = []
     for row in res:
         d = {}
         d["repoName"] = row[0]
@@ -125,7 +125,7 @@ def status_all():
     cursor.execute("select repoName, passed from answer")
     res = cursor.fetchall()
     cursor.close()
-    return status_parse(res)
+    return jsonify(status_parse(res))
 
 
 @app.route("/status/<name>")
