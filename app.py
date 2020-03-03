@@ -1,4 +1,5 @@
-import os, git, datetime
+import os, git
+from datetime import datetime
 from flask import Flask, request, json, jsonify
 from flask_mysqldb import MySQL
 import categoriesLister as cl
