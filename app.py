@@ -108,15 +108,16 @@ def hook():
 
 @app.route("/status/everyone")
 def status_all():
-
-
-@app.route("/status/<name>")
-def status(name):
     cursor = mysql.connection.cursor()
     cursor.execute("select repoName, passed from answer")
     res = cursor.fetchall()
     cursor.close()
     return jsonify(res)
+
+
+@app.route("/status/<name>")
+def status(name):
+    return "success"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=83)
