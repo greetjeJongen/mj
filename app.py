@@ -130,7 +130,11 @@ def status_all():
 
 @app.route("/status/<name>")
 def status(name):
-    return "success"
+    cursor = mysql.connection.cursor()
+    cursor.execute("select repoName, passed from answer where repoName=%s", [str(name)])
+    res = cursor.fetchall()
+    cursor.close()
+    return jsonify(status_parse(res))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=port)
