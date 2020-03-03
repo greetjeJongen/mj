@@ -41,3 +41,8 @@ def copy_question(user, cat, q):
     except Exception as e:
         print("Something went wrong pushing the new question!")
         print(e)
+
+
+def insert_question(user, category, path):
+
+    return None

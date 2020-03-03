@@ -1,4 +1,4 @@
-import os, git, subprocess
+import os, git, datetime
 from flask import Flask, request, json, jsonify
 from flask_mysqldb import MySQL
 import categoriesLister as cl
@@ -28,7 +28,7 @@ def has_current_question(user):
 @app.route("/question/<user>/next")
 def next_question(user):
     if has_current_question(user):
-        return user+" already has a question!"
+        return user+" already has a question"
     
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT category FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
@@ -45,9 +45,10 @@ def next_question(user):
         rq.copy_question(user, category, ques)
 
         # insert nieuwe vraag in db
+        insert_question(category, ques, user)
 
+        return "new question delivered"
 
-        return "success"
     else:
         last_cat = res[0][0]
         print(user+" has made an exercise for all categories up to " + last_cat)
@@ -55,6 +56,7 @@ def next_question(user):
         index = cats.index(last_cat)
         if index >= len(cats):
             print("All exercises are made!?")
+            return "all exercises made"
         else:
             next_cat = cats[index+1]
             ques = rq.get_random_question(str(next_cat))
@@ -65,8 +67,20 @@ def next_question(user):
             rq.copy_question(user, next_cat, ques)
 
             # insert neiuwe vraag in db
+            insert_question(next_cat, ques, user)
 
-        return "success"
+        return "new question delivered"
+
+
+def insert_question(category, ques, user):
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,%s,%s) ",
+        (user, category, category + "/" + ques + "/", now, 0))
+    mysql.connection.commit()
+    cursor.close()
+
 
 @app.route("/hook", methods=['POST'])
 def hook():
