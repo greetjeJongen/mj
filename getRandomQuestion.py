@@ -30,7 +30,6 @@ def copy_question(user, cat, q):
     dest_path = user_cat_path + "/Student.java"
     shutil.copy(src_path, dest_path)
     # res = subprocess.call(["cp", "../MJQuestions/" + cat + "/" + q + "/*", user_cat_path + "/" + q])
-    print(res)
 
     # push changes
     try:
@@ -39,5 +38,6 @@ def copy_question(user, cat, q):
         repo.index.commit("New question from category " + cat)
         origin = repo.remote(name="origin")
         origin.push()
-    except:
+    except Exception as e:
         print("Something went wrong pushing the new question!")
+        print(e)
