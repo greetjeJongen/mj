@@ -56,7 +56,7 @@ def next_question(user):
         cats = cl.list_cats()
         index = cats.index(last_cat)
         if index >= len(cats)-1:
-            print("All exercises are made!?")
+            print("All exercises are made")
             return "all exercises made"
         else:
             next_cat = cats[index+1]
@@ -73,8 +73,12 @@ def next_question(user):
         return "new question delivered"
 
 
-def insert_question(category, ques, user):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def insert_question(category, ques, user, datime=None):
+    # datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if datime != None:
+        now = datime
+    else:
+        now = "NULL"
     cursor = mysql.connection.cursor()
     cursor.execute(
         "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,%s,%s) ",
