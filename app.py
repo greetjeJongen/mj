@@ -86,7 +86,7 @@ def insert_question(category, ques, user, datime=None):
 @app.route("/hook", methods=['POST'])
 def hook():
     # wordt opgeroepen bij elke push in de organisatie
-    # runt script dat c++ code compileert en test (zie /root/eindwerk/lb_repos/run_tests)
+    # runt script dat java code compileert en test (zie /root/eindwerk/mj_repos/run_tests)
 
     # code clonen
     data = request.data
@@ -99,9 +99,9 @@ def hook():
     else:
         git.Git(path).clone(url)
 
-    # tests rerunnen
+    # tests runnen
     #rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
     return "success"
 
 if __name__ == "__main__":
-    app.run(host= '0.0.0.0', debug = True, port=83)
+    app.run(host='0.0.0.0', debug=True, port=83)
