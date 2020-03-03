@@ -75,14 +75,10 @@ def next_question(user):
 
 def insert_question(category, ques, user, datime=None):
     # datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    if datime != None:
-        now = datime
-    else:
-        now = "NULL"
     cursor = mysql.connection.cursor()
     cursor.execute(
         "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,%s,%s) ",
-        (user, category, category + "/" + ques + "/", now, 0))
+        (user, category, category + "/" + ques + "/", datime, 0))
     mysql.connection.commit()
     cursor.close()
 
