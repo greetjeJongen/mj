@@ -34,7 +34,7 @@ def copy_question(user, cat, q):
     # push changes
     try:
         repo = git.Repo(user_path+"/.git")
-        repo.git.add(update=True)
+        repo.git.add(A=True)
         repo.index.commit("New question from category " + cat)
         origin = repo.remote(name="origin")
         origin.push()
