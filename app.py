@@ -99,9 +99,14 @@ def insert_question(category, ques, user, datime=None):
 def hook():
     # wordt opgeroepen bij elke push in de organisatie
     # runt script dat java code compileert en test (zie /root/eindwerk/mj_repos/run_tests)
+    data = request.data
+
+    # nakijken of pusher weldegelijk student is en niet de server die
+    # een nieuwe vraag heeft toegewezen
+    if json.loads(data)["pusher"]["login"] == "arnevandoorslaer":
+        return "server pushed"
 
     # code clonen
-    data = request.data
     url = json.loads(data)["repository"]["url"]
     name = json.loads(data)["repository"]["name"]
 
