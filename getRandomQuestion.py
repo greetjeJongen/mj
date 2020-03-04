@@ -5,7 +5,7 @@ questions_path = "../MJQuestions/"
 repos_path = "../mj_repos/"
 
 def get_random_question(category):
-    path = "../MJQuestions/"+category+"/"
+    path = questions_path + category + "/"
     
     li = []
     for x in os.listdir(path):
