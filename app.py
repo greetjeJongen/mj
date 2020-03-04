@@ -34,7 +34,7 @@ def has_current_question(user):
 def next_question(user):
     if has_current_question(user):
         return user+" already has a question"
-    
+
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT category FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
     res = cursor.fetchall()
@@ -117,18 +117,20 @@ def status_parse(res):
 
     return result
 
-@app.route("/test/add", methods=["POST"])
-def add_test():
-    print(request.data.splitlines()[-1])
-    with open("outfile-test", "w") as outfile:
-        outfile.write(str(request.data))
-
-
+@app.route("/test/add/<user>/<cat>/<ques>", methods=["POST"])
+def add_test(user, cat, ques):
     # if request data is goed
     # insert passed 1 into db
     # else 0
     # also timedate of answer fixen:
-    # datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    passed = not "FAILURES" in request.data
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,now(),%s) ",
+        (user, cat, cat + "/" + ques + "/", passed))
+    mysql.connection.commit()
+    cursor.close()
+
 
     return "success"
 
