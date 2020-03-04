@@ -131,6 +131,9 @@ def add_test(user, cat, ques):
     mysql.connection.commit()
     cursor.close()
 
+    # geef volgende vraag
+    next_question(user)
+
 
     return "success"
 
