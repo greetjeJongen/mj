@@ -109,6 +109,8 @@ def hook():
 
     # nakijken of pusher weldegelijk student is en niet de server die
     # een nieuwe vraag heeft toegewezen
+    if json.loads(data)["pusher"]["name"] == testing_user:
+        return "server pushed"
 
     # code clonen
     url = json.loads(data)["repository"]["url"]
