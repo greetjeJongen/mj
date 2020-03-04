@@ -1,4 +1,5 @@
 import os, git
+import subprocess
 from datetime import datetime
 from flask import Flask, request, json, jsonify
 from flask_mysqldb import MySQL
@@ -29,6 +30,14 @@ def has_current_question(user):
     cursor.close()
 
     return len(res) != 0
+
+def current_question(user):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s and datetimeOfAnswer is null order by category desc limit 1;", [str(user)])
+    res = cursor.fetchall()
+    cursor.close()
+
+    return res
 
 @app.route("/question/<user>/next")
 def next_question(user):
@@ -80,8 +89,8 @@ def next_question(user):
 def insert_question(category, ques, user, datime=None):
     cursor = mysql.connection.cursor()
     cursor.execute(
-        "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,%s,%s) ",
-        (user, category, category + "/" + ques + "/", datime, 0))
+        "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,now(),%s) ",
+        (user, category, category + "/" + ques + "/", None))
     mysql.connection.commit()
     cursor.close()
 
@@ -102,7 +111,7 @@ def hook():
         git.Git(repos_path).clone(url)
 
     # tests runnen
-    #rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name)])
+    rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name), str(cat)])
     return "success"
 
 # given a list of tuples res (query result), converts this list to a dict with readable keys
