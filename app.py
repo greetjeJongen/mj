@@ -120,6 +120,9 @@ def status_parse(res):
 @app.route("/test/add", methods=["POST"])
 def add_test():
     print(request.data.splitlines()[-1])
+    with open("outfile-test", "w") as outfile:
+        outfile.write(request.data)
+
 
     # if request data is goed
     # insert passed 1 into db
