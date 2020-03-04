@@ -123,7 +123,7 @@ def add_test(user, cat, ques):
     # insert passed 1 into db
     # else 0
     # also timedate of answer fixen:
-    passed = not "FAILURES" in request.data
+    passed = not "FAILURES" in str(request.data)
     cursor = mysql.connection.cursor()
     cursor.execute(
         "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,now(),%s) ",
