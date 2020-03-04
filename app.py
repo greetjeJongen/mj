@@ -51,7 +51,7 @@ def next_question(user):
         return user+" already has a question"
 
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT category FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
+    cursor.execute("SELECT category, passed FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
     res = cursor.fetchall()
     cursor.close()
     if len(res) == 0:
@@ -71,6 +71,7 @@ def next_question(user):
 
     else:
         last_cat = res[0][0]
+        passed = res[0][1]
         print(user+" has made an exercise for all categories up to " + last_cat)
         cats = cl.list_cats()
         index = cats.index(last_cat)
@@ -79,6 +80,8 @@ def next_question(user):
             return "all exercises made"
         else:
             next_cat = cats[index+1]
+            if passed is False:
+                next_cat = cats[index]
             ques = rq.get_random_question(str(next_cat))
             path_to_question = repos_path + user + "/" + next_cat + "/" + ques
             print("Assigning " + path_to_question + " ...")
