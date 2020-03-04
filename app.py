@@ -78,7 +78,6 @@ def next_question(user):
 
 
 def insert_question(category, ques, user, datime=None):
-    # datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     cursor = mysql.connection.cursor()
     cursor.execute(
         "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,%s,%s) ",
@@ -117,6 +116,20 @@ def status_parse(res):
         result.append(d)
 
     return result
+
+@app.route("/test/add", methods=["POST"])
+def add_test():
+
+    print(request.data)
+
+    # if request data is goed
+    # insert passed 1 into db
+    # else 0
+    # also timedate of answer fixen:
+    # datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    return "success"
+
 
 
 @app.route("/status/everyone")
