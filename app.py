@@ -119,9 +119,7 @@ def status_parse(res):
 
 @app.route("/test/add", methods=["POST"])
 def add_test():
-
-    print(request.data)
-    request.data.splitlines()[-1]
+    print(request.data.splitlines()[-1])
 
     # if request data is goed
     # insert passed 1 into db
@@ -130,8 +128,6 @@ def add_test():
     # datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     return "success"
-
-
 
 @app.route("/status/everyone")
 def status_all():
