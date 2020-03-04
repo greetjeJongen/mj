@@ -18,6 +18,7 @@ mysql = MySQL(app)
 questions_path = "../MJQuestions/"
 repos_path = "../mj_repos/"
 port = 83
+testing_user = "arnevandoorslaer"
 
 @app.route("/")
 def index():
@@ -103,8 +104,6 @@ def hook():
 
     # nakijken of pusher weldegelijk student is en niet de server die
     # een nieuwe vraag heeft toegewezen
-    if json.loads(data)["pusher"]["login"] == "arnevandoorslaer":
-        return "server pushed"
 
     # code clonen
     url = json.loads(data)["repository"]["url"]
