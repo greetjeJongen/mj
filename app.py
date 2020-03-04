@@ -26,19 +26,24 @@ def index():
 
 def has_current_question(user):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s and datetimeOfAnswer is null;", [str(user)])
+    cursor.execute("SELECT passed FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
     res = cursor.fetchall()
     cursor.close()
 
-    return len(res) != 0
+    print(len(res))
+
+    if len(res) == 0:
+        return False
+    else:
+        return res[0][0] is None
 
 def current_question(user):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s and datetimeOfAnswer is null order by category desc limit 1;", [str(user)])
+    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s AND passed IS NULL ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
     res = cursor.fetchall()
     cursor.close()
-
-    return res
+    print(res[0][0])
+    return res[0][0]
 
 @app.route("/question/<user>/next")
 def next_question(user):
@@ -113,9 +118,14 @@ def hook():
         git.Git(repos_path + name).pull(url)
     else:
         git.Git(repos_path).clone(url)
-
+    
+    pTemp = current_question(name)
+    pTemp = pTemp.split("/")
+    cat = pTemp[0]
+    ques = pTemp[1]
+    print(str(pTemp))
     # tests runnen
-    rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name), str(cat)])
+    rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name), str(cat), str(ques)])
     return "success"
 
 # given a list of tuples res (query result), converts this list to a dict with readable keys
