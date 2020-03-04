@@ -121,6 +121,7 @@ def status_parse(res):
 def add_test():
 
     print(request.data)
+    request.data.splitlines()[-1]
 
     # if request data is goed
     # insert passed 1 into db
