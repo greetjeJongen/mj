@@ -121,7 +121,7 @@ def status_parse(res):
 def add_test():
     print(request.data.splitlines()[-1])
     with open("outfile-test", "w") as outfile:
-        outfile.write(request.data)
+        outfile.write(str(request.data))
 
 
     # if request data is goed
