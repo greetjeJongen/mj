@@ -1,5 +1,8 @@
 import os
 
+questions_path = "../MJQuestions/"
+repos_path = "../mj_repos/"
+
 def list_cats():
     res = []
     for x in os.listdir(questions_path):

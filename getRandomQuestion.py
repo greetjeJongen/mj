@@ -1,6 +1,8 @@
 import os, random, sys, git, subprocess
 import shutil
 
+questions_path = "../MJQuestions/"
+repos_path = "../mj_repos/"
 
 def get_random_question(category):
     path = "../MJQuestions/"+category+"/"
