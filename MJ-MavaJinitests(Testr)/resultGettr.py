@@ -4,37 +4,26 @@ import requests
 
 
 def get_results():
-    # call naar backend voor ophalen result info
-    response = requests.get('http://server.arne.tech:82/user/{}'.format(username))
+    # API call
+    response = requests.get('http://server.arne.tech:83/status/{}'.format(username))
     results = response.json()
 
-    result = 'test'
-    # result += results  # of iets in deze aard
-
-    if file:
-        # kijk of file al bestaat, indien nee maak aan, indien ja, open vorige
-        # schrijf opgehaalde info in file
-        try:
-            f = open("results.txt", "x")
-        except IOError:
-            f = open("results.txt", "w")
-        finally:
-            f.write(result)
-            f.close()
+    if results[0]["passed"] == 0:
+        print("passed: false")
     else:
-        # print resultaten
-        print(result)
+        print("passed: true")
 
 
 # startup parameters ###################################################################################################
 parser = OptionParser()
-parser.add_option("-f", "--file", action="store_true", dest="file", default=False,
-                  help="place the output in a file")
 parser.add_option("-u", "--github_username", dest="username", help="your GitHub username")
 
 (options, args) = parser.parse_args()
-file = options.file
 username = options.username
 # username = ''
+
+# Check if username given
+if username is None:
+    raise Exception("You have to provide a repo name")
 
 get_results()
