@@ -1,6 +1,5 @@
 import os, git
 import subprocess
-from datetime import datetime
 from flask import Flask, request, json, jsonify
 from flask_mysqldb import MySQL
 import categoriesLister as cl
