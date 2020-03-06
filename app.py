@@ -22,29 +22,12 @@ testing_user = "arnevandoorslaer"
 
 @app.route("/")
 def index():
-    return "Welcome! Dit is de endpoint voor Mava Jini Testr"
+    return "Welcome to the Mava Jini Tests!"
 
-def has_current_question(user):
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT passed FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
-    res = cursor.fetchall()
-    cursor.close()
-
-    print(len(res))
-
-    if len(res) == 0:
-        return False
-    else:
-        return res[0][0] is None
-
-def current_question(user):
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s AND passed IS NULL ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
-    res = cursor.fetchall()
-    cursor.close()
-    print(res[0][0])
-    return res[0][0]
-
+# gives the specified user their next qusetion
+# the category of the new question depends on the result of the previous submission
+# when a user pushes a correct submission, they should be given a new question of the next category
+# otherwise, when the answer of the user was incorrect, his next question will be of the same category
 @app.route("/question/<user>/next")
 def next_question(user):
     if has_current_question(user):
@@ -94,16 +77,8 @@ def next_question(user):
 
         return "new question delivered"
 
-
-def insert_question(category, ques, user, datime=None):
-    cursor = mysql.connection.cursor()
-    cursor.execute(
-        "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,now(),%s) ",
-        (user, category, category + "/" + ques + "/", None))
-    mysql.connection.commit()
-    cursor.close()
-
-
+# github webhook listening for updates in the repository
+# this endpoint should not be called manually
 @app.route("/hook", methods=['POST'])
 def hook():
     # wordt opgeroepen bij elke push in de organisatie
@@ -133,18 +108,9 @@ def hook():
     rc = subprocess.call(["/root/eindwerk/mj_repos/run_tests", str(name), str(cat), str(ques)])
     return "success"
 
-# given a list of tuples res (query result), converts this list to a dict with readable keys
-# so that there is no need to rely on indexes. (it also looks better)
-def status_parse(res):
-    result = []
-    for row in res:
-        d = {}
-        d["repoName"] = row[0]
-        d["passed"] = row[1]
-        result.append(d)
-
-    return result
-
+# parses the test output and inserts a new row in the database for this user
+# specifying if their submission was correct or not
+# this endpoint should not be called manually, but by the included bash script
 @app.route("/test/add/<user>/<cat>/<ques>", methods=["POST"])
 def add_test(user, cat, ques):
     # if request data is goed
@@ -165,6 +131,8 @@ def add_test(user, cat, ques):
 
     return "success"
 
+# TODO naar deze endpoint kijken want de output ervan is nie logisch
+# returns a list of every answer and whether that answer was correct or not
 @app.route("/status/everyone")
 def status_all():
     cursor = mysql.connection.cursor()
@@ -173,7 +141,7 @@ def status_all():
     cursor.close()
     return jsonify(status_parse(res))
 
-
+# returns every answer of a specific user
 @app.route("/status/<name>")
 def status(name):
     cursor = mysql.connection.cursor()
@@ -183,6 +151,58 @@ def status(name):
     if len(res) == 0:
         return "no users found with repository " + name
     return jsonify(status_parse(res))
+
+
+
+# below are helper functions designed in an effort to keep the endpoints tidy
+
+# given a category, question and user
+# inserts a row into the answer table
+# used to give the user a new question (where passed is NULL)
+def insert_question(category, ques, user, datime=None):
+    cursor = mysql.connection.cursor()
+    cursor.execute(
+        "INSERT INTO answer(repoName, category, pathToQuestion, dateTimeOfAnswer, passed) values (%s,%s,%s,now(),%s) ",
+        (user, category, category + "/" + ques + "/", None))
+    mysql.connection.commit()
+    cursor.close()
+
+# returns the latest question a given user has not yet completed
+# (the one they're currently working on)
+def current_question(user):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT pathToQuestion FROM answer WHERE repoName=%s AND passed IS NULL ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
+    res = cursor.fetchall()
+    cursor.close()
+    print(res[0][0])
+    return res[0][0]
+
+# checks if the user currently has a question
+# for which they have not yet made any submissions
+def has_current_question(user):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT passed FROM answer WHERE repoName=%s ORDER BY datetimeOfAnswer DESC LIMIT 1;", [str(user)])
+    res = cursor.fetchall()
+    cursor.close()
+
+    print(len(res))
+
+    if len(res) == 0:
+        return False
+    else:
+        return res[0][0] is None
+
+# given a list of tuples res (query result), this function converts this list to a dict with readable keys
+# so that there is no need to rely on indexes. (it also looks better)
+def status_parse(res):
+    result = []
+    for row in res:
+        d = {}
+        d["repoName"] = row[0]
+        d["passed"] = row[1]
+        result.append(d)
+
+    return result
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=port)
