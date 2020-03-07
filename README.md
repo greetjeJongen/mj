@@ -17,7 +17,7 @@ You can edit the database configuration in lines 9 - 13 in app.py
 
 This is the MySQL syntax to setup the tables needed:
 ```sql
-TODO
+CREATE TABLE answer(id SERIAL PRIMARY KEY, repoName VARCHAR(100), category VARCHAR(100), pathToQuestion VARCHAR(100), datetimeOfAnswer DATETIME, passed BOOLEAN);
 ```
 # Routes
 * **"/"** [GET] : Shows the words words 'Welcome to the Mava Jini Tests!'. Used only to verify server availability
